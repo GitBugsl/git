@@ -22,6 +22,6 @@ Route::get('/register', function () {
     return view('auth.register');
 });
 
-Route::get('/login', function () {
+Route::post('/logout', function () {
    //
 });
