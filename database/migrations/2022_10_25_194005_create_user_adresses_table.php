@@ -13,16 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('user_adresses', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('email')->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable()->nullable();
-            $table->string('password')->nullable();
-            $table->rememberToken()->nullable();
+            $table->string('UserCity')->nullable();
+            $table->string('UserCounty')->nullable();
+            $table->string('UserRegion')->nullable();
+            $table->string('UserId')->nullable();
             $table->timestamps();
         });
     }
+
+ 
 
     /**
      * Reverse the migrations.
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_adresses');
     }
 };

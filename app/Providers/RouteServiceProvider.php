@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to your application's "home" route.
+     * The path to the "home" route for your application.
      *
      * Typically, users are redirected here after authentication.
      *
@@ -21,20 +21,48 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
+     *
+     * @return void
      */
-    public function boot(): void
+    public function boot()
+    {
+        Route::group([
+            'middleware' => ['api', 'api_version:v1'],
+            'namespace'  => "{$this->apiNamespace}\V1",
+            'prefix'     => 'api/v1',
+        ], function ($router) {
+            require base_path('routes/api_v1.php');
+        });    
+        Route::group([
+            'middleware' => ['api', 'api_version:v2'],
+            'namespace'  => "{$this->apiNamespace}\V2",
+            'prefix'     => 'api/v2',
+        ], function ($router) {
+            require base_path('routes/api_v2.php');
+        });
+    }
+
+    /**
+ * Define the "api" routes for the application.
+ *
+ * These routes are typically stateless.
+ *
+ * @return void
+ */
+
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
-
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
     }
+
+    /** @var string $apiNamespace */
+    protected $apiNamespace ='App\Http\Controllers\Api';
 }
